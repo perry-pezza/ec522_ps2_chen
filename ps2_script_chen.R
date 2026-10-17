@@ -1,5 +1,5 @@
 library(tidyverse)
-unemp_raw <- read_rds("data/unemp_raw.rds")
+unemp_raw <- read_rds("D:/Oregon/economics forecasting/ec522_ps2_chen/data/unemp_raw.rds")
 head(unemp_raw)
 unemp <- unemp_raw |>
   rename(unemployment_rate = price) |>

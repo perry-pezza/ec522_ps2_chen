@@ -1,0 +1,115 @@
+---
+title: "Problem Set 2"
+author: "Peng Chen"
+date: today
+format: 
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  dir: project
+---
+**GitHub repo:** <https://github.com/perry-pezza/ec522_ps2_chen>
+
+## Data
+This problem set we use monthly unemployment rate data directly from FRED for the United States and four individual states (Oregon, California, Texas, and New York), the data from 1976-01-01
+
+```{r}
+library(tidyverse)
+setwd("D:/Oregon/economics forecasting/ec522_ps2_chen")
+source("ps2_script_chen.R")
+head(unemp_raw)
+```
+
+## Wrangling
+First, we used `rename()` and `mutate()` with `case_when()` to clean the data. We created a data frame called `unemp` by renaming `price` to `unemployment_rate` and adding a new column, `region`, with readable names for the five regions (United States, Oregon, California, Texas, and New York).
+Then, we used `filter()`, `mutate()`, `group_by()`, `summarize()`, and `arrange()` to process and analyze the unemployment data, using the pipe operator `|>` to connect these operations.
+**Table 1:** Summary statistics of unemployment rates for the full sample, including the mean, minimum, and maximum.
+```{r}
+knitr::kable(unemp_summary)
+```
+
+**Table 2:** Summary statistics of unemployment rates since 2015.
+
+```{r}
+knitr::kable(unemp_recent_summary)
+```
+
+**Table 3:** The largest monthly increases in unemployment rates, excluding 2020.
+
+```{r}
+knitr::kable(unemp_top_increases_no_covid)
+```
+
+**Table 4:** The largest monthly decreases in unemployment rates, excluding 2020.
+
+```{r}
+knitr::kable(unemp_top_decreases_no_covid)
+```
+
+## Visualization
+
+The following figures illustrate unemployment rate patterns across the five regions.
+
+**Figure 1:** Unemployment rates over the full sample period.
+
+
+```{r}
+ggplot(unemp, aes(x = date, y = unemployment_rate, color = region)) +
+  geom_line() +
+  labs(
+    title = "Monthly Unemployment Rates by Region",
+    x = "Date",
+    y = "Unemployment Rate (%)",
+    color = "Region"
+  ) +
+  theme_minimal()
+```
+  
+
+**Figure 2:** Unemployment rates displayed separately for each region.
+
+```{r}
+ggplot(unemp, aes(x = date, y = unemployment_rate)) +
+  geom_line() +
+  facet_wrap(~ region) +
+  labs(
+    title = "Monthly Unemployment Rates by Region",
+    x = "Date",
+    y = "Unemployment Rate (%)"
+  ) +
+  theme_minimal()
+```
+**Figure 3:** Average unemployment rates by region.
+
+```{r}
+ggplot(unemp_summary,
+       aes(x = fct_reorder(region, mean_rate),
+           y = mean_rate)) +
+  geom_col() +
+  labs(
+    title = "Average Unemployment Rate by Region",
+    x = "Region",
+    y = "Average Unemployment Rate (%)"
+  ) +
+  theme_minimal()
+```
+**Figure 4:** Unemployment rates since 2015.
+
+```{r}
+ggplot(unemp_recent,
+       aes(x = date, y = unemployment_rate, color = region)) +
+  geom_line() +
+  labs(
+    title = "Unemployment Rates Since 2015",
+    x = "Date",
+    y = "Unemployment Rate (%)",
+    color = "Region"
+  ) +
+  theme_minimal()
+```
+I chose to examine unemployment rates since 2015 to focus on recent labor market trends. The chart shows a sharp increase in unemployment during 2020, followed by a decline across all five regions.
+
+
+## Reflection
+In this problem set, reading the saved unemployment data and creating basic plots were relatively straightforward. Cleaning and organizing the data required more attention, especially when dealing with missing values and monthly changes. I also found it challenging to understand how the different R functions work together. Through this assignment, I became more comfortable using pipes and `ggplot2` to analyze and visualize data. I also learned how Git commits help track the progress of my work. Finally, I gained more experience using Quarto to combine code, tables, and explanations in one report.
